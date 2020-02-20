@@ -5,9 +5,13 @@
 pool {{ chrony_pool }}
 {% endif %}
 
-{% if chrony_server %}
+{% if chrony_servers|default(None) is iterable -%}
+{%- for server in chrony_servers %}
+server {{ server }} prefer iburst
+{% endfor -%}
+{% elif chrony_server %}
 server {{ chrony_server }}
-{% endif %}
+{%- endif %}
 
 keyfile {{ chrony_keyfile }}
 commandkey 1
